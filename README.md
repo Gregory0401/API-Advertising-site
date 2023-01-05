@@ -7,3 +7,12 @@
 
 
 ### Features
+
+- **Auth**
+
+    -  ![POST](https://img.shields.io/badge/POST-green)  **`/auth/register`**      *Create a new user*
+    -  ![POST](https://img.shields.io/badge/POST-green)  **`/auth/login`**     *User authentication*
+    -  ![POST](https://img.shields.io/badge/POST-green)  **`/auth/refresh`**     *Get new pair of tokens (use Bearer {refreshToken} instead of accessToken)*
+    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/google`**     *Authorization on the site using Google OAuth API*
+    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/logout`**     *Logout*
+   
