@@ -16,3 +16,9 @@
     -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/google`**     *Authorization on the site using Google OAuth API*
     -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/logout`**     *Logout*
    
+   
+   - **Services-sidebar**  *Access to contact information about services that provide services*
+     -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/friends`**     *Get contact information about services that provide services*
+   
+   
+
