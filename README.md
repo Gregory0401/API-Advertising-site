@@ -18,7 +18,15 @@
    
    
 - **Services-sidebar**  
-    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/friends`**     *Get contact information about services that provide services*
-   
-   
+    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/friends`**     *Get contact information about services that provide services*
+
+
+- **News**
+    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/news`**     *Get news*
+
+- **User**
+    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/user/userinfo`**     *Get current user*
+    -  ![PATCH](https://img.shields.io/badge/PATCH-grey)  **`/user/update`**     *Update contact information about the user by token in headers Autorization*
+    -  ![POST](https://img.shields.io/badge/POST-green)  **`/user/userpets`**     *Create pet*
+    -  ![DELETE](https://img.shields.io/badge/DELETE-red)  **`/user/pets/{petId}`**    *Deleted pet by id*
 
