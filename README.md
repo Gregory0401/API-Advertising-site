@@ -17,8 +17,8 @@
     -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/logout`**     *Logout*
    
    
-   - **Services-sidebar**  
-     -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/friends`**     *Get contact information about services that provide services*
+- **Services-sidebar**  
+    -  ![GET](https://img.shields.io/badge/GET-blue)  **`/auth/friends`**     *Get contact information about services that provide services*
    
    
 
