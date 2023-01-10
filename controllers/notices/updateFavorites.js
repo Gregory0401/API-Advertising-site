@@ -1,6 +1,7 @@
 const { User } = require("../../models/user");
+const { HttpError } = require("../../helpers");
 
-const updateFavorites = async (req, res) => {
+const updateFavorites = async (req, res, next) => {
   const { id } = req.user;
   const { id: noticeId } = req.params;
 
@@ -8,7 +9,7 @@ const updateFavorites = async (req, res) => {
   const isAdded = user.favorites.includes(noticeId);
 
   if (isAdded) {
-    res.status(409).json({ message: "Notice already in favs" });
+    next(HttpError(409, `Notice ${noticeId} already in favorites`));
     return;
   }
   user = await User.findByIdAndUpdate(
@@ -16,37 +17,14 @@ const updateFavorites = async (req, res) => {
     { $push: { favorites: noticeId } },
     { new: true }
   );
-  res.status(200).json({
-    status: "success",
+  res.json({
     code: 200,
+    status: "success",
     message: "Notice added to favorite",
     data: {
-      id: noticeId,
+      noticeId,
     },
   });
 };
 
 module.exports = updateFavorites;
-
-// const { HttpError } = require("../../helpers");
-// const { User } = require("../../models/user");
-
-// const updateFavorites = async (req, res) => {
-//   const { id } = req.user;
-//   const { id: noticeId } = req.params;
-
-//   const user = await User.findById(id);
-//   const isAdded = user.favorites.includes(noticeId);
-
-//   if (isAdded) {
-//     throw HttpError(409, "already in favs");
-//   }
-
-//   user.favorites.push(noticeId);
-//   await user.save();
-//   res.json(user);
-// };
-
-// module.exports = updateFavorites;
-
-//

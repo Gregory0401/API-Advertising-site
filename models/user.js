@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
 const { handleSaveErrors } = require("../helpers");
-const emailRegexp = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+const emailRegexp = /^[a-zA-Z0-9]+[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9]+$/;
+
 const Joi = require("joi");
 
 const userSchema = new Schema(
@@ -8,7 +9,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      minlength: 1,
+      minlength: 7,
     },
     email: {
       type: String,
@@ -22,19 +23,22 @@ const userSchema = new Schema(
     },
     city: {
       type: String,
+      default: "",
     },
     phone: {
       type: String,
-      unique: true,
+      default: "",
     },
     birthday: {
       type: String,
+      default: "",
     },
     avatarUrl: {
       type: String,
       required: true,
     },
-    myPets: [{ type: Schema.ObjectId, ref: "userPet" }],
+    myPets: [{ type: Schema.ObjectId, ref: "userPet", default: [] }],
+    favorites: [{ type: Schema.ObjectId, ref: "notice", default: [] }],
     accessToken: {
       type: String,
       default: null,
@@ -43,9 +47,6 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    favorites: [{ type: Schema.ObjectId, ref: "favorites" }],
-
-    own: [{ type: Schema.ObjectId, ref: "notices" }],
   },
   { versionKey: false, timestamps: true }
 );
@@ -57,24 +58,40 @@ const refreshSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-  password: Joi.string().min(1).max(32).required(),
-  email: Joi.string().required(),
+  password: Joi.string()
+    .min(7)
+    .max(32)
+    .required()
+    .pattern(/^[a-zA-Z0-9а-яА-Я]+$/),
+  email: Joi.string()
+    .required()
+    .pattern(/^[a-zA-Z0-9]+[a-zA-Z0-9_-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9]+$/),
 });
 
 const registerSchema = Joi.object({
-  password: Joi.string().max(32).required(),
-  email: Joi.string().email().required(),
+  password: Joi.string()
+    .min(7)
+    .max(32)
+    .required()
+    .pattern(/^[a-zA-Z0-9а-яА-Я]+$/),
+  repeat_password: Joi.ref("password"),
+  email: Joi.string()
+    .required()
+    .pattern(/^[a-zA-Z0-9]+[a-zA-Z0-9_-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9]+$/),
   name: Joi.string().required(),
-  city: Joi.string().required(),
-  // .pattern(/^(\w+(,)\s*)+\w+$/),
-  phone: Joi.string().required(),
-  // .pattern(/^\+380\d{9}$/, "numbers"),
+  city: Joi.string(),
+  phone: Joi.string(),
+});
+
+const refreshPassSchema = Joi.object({
+  email: Joi.string().required(),
 });
 
 const schemas = {
   loginSchema,
   registerSchema,
   refreshSchema,
+  refreshPassSchema,
 };
 
 const User = model("user", userSchema);

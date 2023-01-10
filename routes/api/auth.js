@@ -16,6 +16,11 @@ router.post(
   validateBody(schemas.loginSchema),
   controllerWrapper(ctrl.login)
 );
+router.patch(
+  "/restore",
+  validateBody(schemas.refreshPassSchema),
+  controllerWrapper(ctrl.refreshPass)
+);
 router.get("/logout", authenticate, controllerWrapper(ctrl.logout));
 router.post(
   "/refresh",

@@ -1,55 +1,87 @@
 const { HttpError } = require("../../helpers");
-const { Notice } = require("../../models/notice");
-const { User } = require("../../models/user");
-const { SECRET_KEY_ACCESS } = process.env;
-const jwt = require("jsonwebtoken");
+const { Notice, categories } = require("../../models/notice");
 
 const getByCategory = async (req, res, next) => {
   const { category } = req.params;
+  const { page = 1, limit = 8, q } = req.query;
+  const skip = (page - 1) * limit;
 
-  if (category === "favorite" || category === "own") {
-    //TODO midleware
-    try {
-      const { authorization = "" } = req.headers;
-
-      const [bearer = "", accessToken = ""] = authorization.split(" ");
-      if (bearer !== "Bearer") {
-        throw HttpError(401, "Not authorized");
-      }
-      try {
-        const { id } = jwt.verify(accessToken, SECRET_KEY_ACCESS);
-        const user = await User.findById(id);
-        if (!user || !user.accessToken) {
-          throw Error("Not authorized");
-        }
-
-        // TODO private notices res
-        req.user = user;
-        const data = await Notice.find({ owner: user._id }).populate({
-          path: "owner",
-          select: "id phone email",
-        });
-        console.log(user.id);
-        res.status(200).json(data);
-
-        next();
-      } catch (error) {
-        throw HttpError(401, "Not authorized");
-      }
-    } catch (error) {
-      next(error);
-    }
-    return;
+  if (!categories.includes(category)) {
+    next(HttpError(400, `Not Found`));
   }
 
-  const result = await Notice.find({ category }).populate({
-    path: "owner",
-    select: "id phone email",
+  let totalPage = 1;
+  let counter = 1;
+
+  const isUndefined = Boolean(q);
+
+  if (!isUndefined) {
+    counter = await Notice.find({ category }).count();
+  } else {
+    counter = await Notice.find({
+      $and: [
+        { category },
+        {
+          $or: [
+            { title: { $regex: `${q}`, $options: "i" } },
+            { location: { $regex: `${q}`, $options: "i" } },
+          ],
+        },
+      ],
+    }).count();
+  }
+
+  if (counter !== 0) {
+    totalPage =
+      counter % limit !== 0 ? Math.floor(counter / limit) + 1 : counter / limit;
+  }
+
+  if (page > totalPage) {
+    next(HttpError(400, `Not Found, ${page} is last page`));
+  }
+
+  let data = [];
+
+  if (isUndefined) {
+    data = await Notice.find(
+      {
+        $and: [
+          { category },
+          {
+            $or: [
+              { title: { $regex: `${q}`, $options: "i" } },
+              { location: { $regex: `${q}`, $options: "i" } },
+            ],
+          },
+        ],
+      },
+      "",
+      {
+        skip: Number(skip),
+        limit: Number(limit),
+      }
+    ).populate({
+      path: "owner",
+      select: "id phone email",
+    });
+  } else {
+    data = await Notice.find({ category }, "", {
+      skip: Number(skip),
+      limit: Number(limit),
+    }).populate({
+      path: "owner",
+      select: "id phone email",
+    });
+  }
+
+  res.json({
+    code: 200,
+    status: "success",
+    data,
+    page: Number(page),
+    totalPage,
+    counter,
   });
-  if (result !== 0) {
-    return res.status(200).json(result);
-  }
-  throw HttpError(404, "Not found");
 };
 
 module.exports = getByCategory;
