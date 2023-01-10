@@ -30,3 +30,11 @@
     -  ![POST](https://img.shields.io/badge/POST-green)  **`/user/userpets`**     *Create pet*
     -  ![DELETE](https://img.shields.io/badge/DELETE-red)  **`/user/pets/{petId}`**    *Deleted pet by id*
 
+- **Notices**
+-  ![POST](https://img.shields.io/badge/POST-green)  **`/notices/addnotice`**      *Add new notice*
+-  ![GET](https://img.shields.io/badge/GET-blue)  **`/notices/category`**           *Get information by category*
+-  ![GET](https://img.shields.io/badge/GET-blue)  **`/notices/user/own`**          *Get information about user notification*
+-  ![GET](https://img.shields.io/badge/GET-blue)  **`/notices/user/favorite`**     *Get information by favorite*
+-  ![PATCH](https://img.shields.io/badge/PATCH-grey)  **`/notices/user/:id/favorites`**     *Updating information about the user's favorite notice by token in headers Autorization*
+-  ![DELETE](https://img.shields.io/badge/DELETE-red)  **`/notices/user/:id/favorites`**    *Deleting information about the user's favorite notice by token in headers Autorization*
+-  ![DELETE](https://img.shields.io/badge/DELETE-red)  **`/notices/user/:id`**    *Deleting user notification information by token in headers Autorization*
